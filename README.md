@@ -10,21 +10,17 @@ const xenv = require('xenv');
 
 const schema = {
   MONGODB: {
-    type: 'string',
     required: true
   },
   RABBITMQ: {
-    type: 'object',
     required: true,
     parse: url.parse
   },
   PORT: {
-    type: 'int',
     default: 9000,
     parse: parseInt
   },
   BLACKLIST: {
-    type: 'array',
     default: [],
     parse: blacklist => blacklist.split(',')
   }

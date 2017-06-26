@@ -99,4 +99,18 @@ describe('xenv', function () {
     assert.equal(output.FOO.xyz, 123);
   });
 
+
+  it('should throw an error when validate returns false', function() {
+    const schema = {
+      'FOO': {
+        required: true,
+        validate: foo => foo > 1000
+      }
+    };
+
+    const input = { FOO: 100 };
+
+    assert.throws(() => xenv({ schema }, input), /The environment variable FOO has been defined with an invalid value/);
+  });
+
 });

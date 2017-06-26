@@ -1,3 +1,6 @@
+const xtend = require('xtend');
+const url = require('url');
+
 module.exports = function(params, envs) {
   if (typeof params !== 'object') {
     throw new Error('params is required');
@@ -11,6 +14,7 @@ module.exports = function(params, envs) {
 
   const keys = Object.keys(params.schema);
 
+  //generate the result object
   keys.forEach(property => {
     const config = params.schema[property];
 
@@ -29,6 +33,7 @@ module.exports = function(params, envs) {
     }
   });
 
+  //validate required properties
   keys.forEach(property => {
     const config = params.schema[property];
 
@@ -45,5 +50,55 @@ module.exports = function(params, envs) {
     }
   });
 
+  //validate schemas
+  keys.forEach(property => {
+    const config = params.schema[property];
+
+    if (typeof config.validate !== 'function' ||
+        typeof result[property] === 'undefined') {
+      return;
+    }
+
+    if (!config.validate(result[property])) {
+      throw new Error(`The environment variable ${property} has been defined with an invalid value`);
+    }
+  });
+
   return result;
+};
+
+module.exports.int = function(params) {
+  return xtend({
+    default:  0,
+    parse:    parseInt,
+    validate: n => n === parseInt(n, 10)
+  }, params || {});
+};
+
+module.exports.float = function(params) {
+  return xtend({
+    default:  0,
+    parse:    parseFloat,
+    validate: n => n === parseFloat(n, 10)
+  }, params || {});
+};
+
+module.exports.object = function(params) {
+  return xtend({
+    default:  0,
+    parse:    JSON.parse,
+    validate: v => typeof v === 'object'
+  }, params || {});
+};
+
+module.exports.url = function(params) {
+  return xtend({
+    default:  0,
+    parse:    url.parse,
+    validate: v => {
+      return typeof v === 'object' &&
+            ('hostname' in v || 'host' in v) &&
+            'port' in v;
+    }
+  }, params || {});
 };
