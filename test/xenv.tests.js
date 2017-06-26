@@ -42,6 +42,33 @@ describe('xenv', function () {
     assert.throws(() => xenv({ schema }, process.env), /The required environment variable FOO has not been defined/);
   });
 
+
+  it('should not throw an error when required returns false and the variable is missing', function() {
+    const schema = {
+      'BAR': {
+        default: false
+      },
+      'FOO': {
+        required: env => env['BAR']
+      }
+    };
+
+    assert.doesNotThrow(() => xenv({ schema }, process.env));
+  });
+
+  it('should throw an error when required returns true and the variable is missing', function() {
+    const schema = {
+      'BAR': {
+        default: false
+      },
+      'FOO': {
+        required: env => env['BAR']
+      }
+    };
+
+    assert.doesNotThrow(() => xenv({ schema }, process.env));
+  });
+
   it('should execute the parse function when the variable is an string', function() {
     const schema = {
       'FOO': {
