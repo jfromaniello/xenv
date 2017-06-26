@@ -91,6 +91,14 @@ module.exports.object = function(params) {
   }, params || {});
 };
 
+module.exports.boolean = function(params) {
+  return xtend({
+    default:  false,
+    parse:    v => Boolean(v),
+    validate: v => typeof v === 'boolean'
+  }, params || {});
+};
+
 module.exports.url = function(params) {
   return xtend({
     default:  0,
