@@ -68,39 +68,55 @@ module.exports = function(params, envs) {
 };
 
 module.exports.int = function(params) {
-  return xtend({
+  const schema = xtend({
     default:  0,
     parse:    parseInt,
     validate: n => n === parseInt(n, 10)
   }, params || {});
+  if (params.required) {
+    delete schema.default;
+  }
+  return schema;
 };
 
 module.exports.float = function(params) {
-  return xtend({
+  const schema = xtend({
     default:  0,
     parse:    parseFloat,
     validate: n => n === parseFloat(n, 10)
   }, params || {});
+  if (params.required) {
+    delete schema.default;
+  }
+  return schema;
 };
 
 module.exports.object = function(params) {
-  return xtend({
+  const schema = xtend({
     default:  0,
     parse:    JSON.parse,
     validate: v => typeof v === 'object'
   }, params || {});
+  if (params.required) {
+    delete schema.default;
+  }
+  return schema;
 };
 
 module.exports.boolean = function(params) {
-  return xtend({
+  const schema = xtend({
     default:  false,
     parse:    v => Boolean(v),
     validate: v => typeof v === 'boolean'
   }, params || {});
+  if (params.required) {
+    delete schema.default;
+  }
+  return schema;
 };
 
 module.exports.url = function(params) {
-  return xtend({
+  const schema = xtend({
     default:  0,
     parse:    url.parse,
     validate: v => {
@@ -109,4 +125,8 @@ module.exports.url = function(params) {
             'port' in v;
     }
   }, params || {});
+  if (params.required) {
+    delete schema.default;
+  }
+  return schema;
 };
