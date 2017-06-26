@@ -2,6 +2,7 @@
   "name": "xenv",
   "description": "Parse and validate configuration variables.",
   "version": "1.0.0",
+  "license": "MIT",
   "author": "José F. Romaniello <jfromaniello@gmail.com> (http://joseoncode.com)",
   "repository": {
     "url": "git://github.com/jfromaniello/xenv.git"
