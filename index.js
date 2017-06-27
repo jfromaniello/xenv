@@ -1,5 +1,5 @@
-const xtend = require('xtend');
-const url = require('url');
+const templates = require('./lib/templates');
+const _ = require('lodash');
 
 module.exports = function(params, envs) {
   if (typeof params !== 'object') {
@@ -12,11 +12,17 @@ module.exports = function(params, envs) {
 
   const result = {};
 
-  const keys = Object.keys(params.schema);
+  const schema = _.clone(params.schema);
+  const keys = Object.keys(schema);
+
+  keys.forEach(property => {
+    if (typeof schema[property].type === 'undefined') { return; }
+    schema[property] = templates[schema[property].type](schema[property]);
+  });
 
   //generate the result object
   keys.forEach(property => {
-    const config = params.schema[property];
+    const config = schema[property];
 
     if (!config.required && typeof config.default === 'undefined') {
       throw new Error(`${property} must either have a default or be required`);
@@ -35,7 +41,7 @@ module.exports = function(params, envs) {
 
   //validate required properties
   keys.forEach(property => {
-    const config = params.schema[property];
+    const config = schema[property];
 
     if (typeof config.required === 'undefined' || property in result) {
       return;
@@ -52,7 +58,7 @@ module.exports = function(params, envs) {
 
   //validate schemas
   keys.forEach(property => {
-    const config = params.schema[property];
+    const config = schema[property];
 
     if (typeof config.validate !== 'function' ||
         typeof result[property] === 'undefined') {
@@ -65,68 +71,4 @@ module.exports = function(params, envs) {
   });
 
   return result;
-};
-
-module.exports.int = function(params) {
-  const schema = xtend({
-    default:  0,
-    parse:    parseInt,
-    validate: n => n === parseInt(n, 10)
-  }, params || {});
-  if (params.required) {
-    delete schema.default;
-  }
-  return schema;
-};
-
-module.exports.float = function(params) {
-  const schema = xtend({
-    default:  0,
-    parse:    parseFloat,
-    validate: n => n === parseFloat(n, 10)
-  }, params || {});
-  if (params.required) {
-    delete schema.default;
-  }
-  return schema;
-};
-
-module.exports.object = function(params) {
-  const schema = xtend({
-    default:  0,
-    parse:    JSON.parse,
-    validate: v => typeof v === 'object'
-  }, params || {});
-  if (params.required) {
-    delete schema.default;
-  }
-  return schema;
-};
-
-module.exports.boolean = function(params) {
-  const schema = xtend({
-    default:  false,
-    parse:    v => Boolean(v),
-    validate: v => typeof v === 'boolean'
-  }, params || {});
-  if (params.required) {
-    delete schema.default;
-  }
-  return schema;
-};
-
-module.exports.url = function(params) {
-  const schema = xtend({
-    default:  0,
-    parse:    url.parse,
-    validate: v => {
-      return typeof v === 'object' &&
-            ('hostname' in v || 'host' in v) &&
-            'port' in v;
-    }
-  }, params || {});
-  if (params.required) {
-    delete schema.default;
-  }
-  return schema;
 };

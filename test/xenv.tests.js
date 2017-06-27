@@ -113,4 +113,18 @@ describe('xenv', function () {
     assert.throws(() => xenv({ schema }, input), /The environment variable FOO has been defined with an invalid value/);
   });
 
+
+  it('should work with predefined schemas', function() {
+    const schema = {
+      'FOO': {
+        type: 'url',
+        required: true,
+      }
+    };
+
+    const input = { FOO: 100 };
+
+    assert.throws(() => xenv({ schema }, input), /The environment variable FOO has been defined with an invalid value/);
+  });
+
 });
