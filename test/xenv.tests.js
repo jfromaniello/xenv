@@ -32,6 +32,19 @@ describe('xenv', function () {
     assert.equal(output.FOO, 'test');
   });
 
+  it('should work when default is a func', function() {
+    const schema = {
+      'FOO': {
+        default: env => `https://${env.BAR}`
+      },
+      'BAR': {
+        default: 'foo.com'
+      }
+    };
+    const output = xenv({schema}, {});
+    assert.equal(output.FOO, 'https://foo.com');
+  });
+
   it('should throw an error for required properties', function() {
     const schema = {
       'FOO': {

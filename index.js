@@ -34,8 +34,15 @@ module.exports = function(params, envs) {
       } else {
         result[property] = envs[property];
       }
-    } else if ('default' in config) {
+    } else if ('default' in config && typeof config.default !== 'function') {
       result[property] = config.default;
+    }
+  });
+
+  keys.forEach(property => {
+    const config = schema[property];
+    if (!(property in envs) && typeof config.default === 'function') {
+      result[property] = config.default(result);
     }
   });
 
