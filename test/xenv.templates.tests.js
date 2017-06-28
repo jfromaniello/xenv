@@ -113,4 +113,20 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
+
+
+  describe('xenvTemplates.millis', function() {
+    it('should return an millis schema', function() {
+      const schema = xenvTemplates.millis({ default: 100 });
+      assert.strictEqual(schema['default'], 100);
+
+      assert.strictEqual(schema['parse']('1m'), 1000 * 60);
+      assert.strictEqual(schema['parse']('1h'), 1000 * 60 * 60);
+
+      assert.ok(schema['validate'](100));
+      assert.notOk(schema['validate'](10.12));
+      assert.notOk(schema['validate']({}));
+      assert.notOk(schema['validate'](false));
+    });
+  });
 });
