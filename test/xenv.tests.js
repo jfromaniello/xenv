@@ -140,4 +140,18 @@ describe('xenv', function () {
     assert.throws(() => xenv({ schema }, input), /The environment variable FOO has been defined with an invalid value/);
   });
 
+
+  it('should fail if the predefined schema doesnt exists', function() {
+    const schema = {
+      'FOO': {
+        type: 'doris',
+        required: true,
+      }
+    };
+
+    const input = { FOO: 100 };
+
+    assert.throws(() => xenv({ schema }, input), /The predefined type for FOO "doris" does not exists/);
+  });
+
 });

@@ -16,8 +16,14 @@ module.exports = function(params, envs) {
   const keys = Object.keys(schema);
 
   keys.forEach(property => {
-    if (typeof schema[property].type === 'undefined') { return; }
-    schema[property] = templates[schema[property].type](schema[property]);
+    const type = schema[property].type;
+    if (typeof type === 'undefined') { return; }
+
+    const template = templates[type];
+    if (typeof template !== 'function') {
+      throw new Error(`The predefined type for FOO "${type}" does not exists`);
+    }
+    schema[property] = template(schema[property]);
   });
 
   //generate the result object
