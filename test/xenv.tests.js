@@ -20,6 +20,16 @@ describe('xenv', function () {
     assert.notProperty(output, 'TEST_FOO');
   });
 
+  it('should add a property if is not required, has no default but it is provided', function() {
+    const schema = {
+      'TEST_FOO': {
+        parse: (foo) => foo
+      }
+    };
+    const output = xenv({ schema }, { TEST_FOO: '123' });
+    assert.equal(output.TEST_FOO, '123');
+  });
+
   it('should return an object with the default values for the missing properties', function() {
     const schema = {
       'FOO': {

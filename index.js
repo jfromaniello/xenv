@@ -29,9 +29,6 @@ module.exports = function(params, envs) {
   //copy properties from input and set defaults
   keys.forEach(property => {
     const config = schema[property];
-    if (!config.required && !_.has(config, 'default')) {
-      return;
-    }
     if (_.has(envs, property)) {
       result[property] = envs[property];
     } else if (_.has(config, 'default') && typeof config.default !== 'function') {
