@@ -99,7 +99,7 @@ describe('xenvTemplates.templates', function() {
 
   describe('xenvTemplates.arrayOfStrings', function() {
     it('should return a arrayOfStrings schema', function() {
-      const schema = xenvTemplates.arrayOfStrings();
+      const schema = xenvTemplates.arrayOfStrings({default: []});
       assert.ok(Array.isArray(schema['default']));
       assert.equal(schema['default'].length, 0);
 
