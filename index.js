@@ -26,30 +26,34 @@ module.exports = function(params, envs) {
     schema[property] = template(schema[property]);
   });
 
-  //generate the result object
+  //copy properties from input and set defaults
   keys.forEach(property => {
     const config = schema[property];
-
     if (!config.required && !_.has(config, 'default')) {
       return;
     }
-
     if (_.has(envs, property)) {
-      if (config.parse && typeof envs[property] === 'string') {
-        result[property] = config.parse(envs[property]);
-      } else {
-        result[property] = envs[property];
-      }
+      result[property] = envs[property];
     } else if (_.has(config, 'default') && typeof config.default !== 'function') {
       result[property] = config.default;
     }
   });
 
-  keys.forEach(property => {
+  //execute defaults functions
+  keys.filter(property => {
+    return !_.has(envs, property) &&
+           typeof schema[property].default === 'function';
+  }).forEach(property => {
     const config = schema[property];
-    if (!_.has(envs, property) && typeof config.default === 'function') {
-      result[property] = config.default(result);
-    }
+    result[property] = config.default(result);
+  });
+
+  //execute parsers
+  keys.filter(property => {
+    return typeof result[property] === 'string' &&
+      typeof schema[property].parse === 'function';
+  }).forEach(property => {
+    result[property] = schema[property].parse(result[property]);
   });
 
   //validate required properties

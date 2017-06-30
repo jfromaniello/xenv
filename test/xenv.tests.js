@@ -97,6 +97,21 @@ describe('xenv', function () {
     assert.equal(output.FOO.xyz, 123);
   });
 
+  it('should parse the efault value', function() {
+    const schema = {
+      'FOO': {
+        default: JSON.stringify({ xyz: 123 }),
+        parse: JSON.parse
+      }
+    };
+
+    const input = {};
+
+    const output = xenv({schema}, input);
+
+    assert.equal(output.FOO.xyz, 123);
+  });
+
   it('should not parse non-string variables', function() {
     const schema = {
       'FOO': {
