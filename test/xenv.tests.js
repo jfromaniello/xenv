@@ -10,14 +10,14 @@ describe('xenv', function () {
     assert.throws(() => xenv({}, process.env), /schema is required/);
   });
 
-  it('should fail if property is not required and has no default', function() {
+  it('should not add a property if is not required and has no default', function() {
     const schema = {
       'TEST_FOO': {
         parse: (foo) => foo
       }
     };
-
-    assert.throws(() => xenv({ schema }, process.env), /TEST_FOO must either have a default or be required/);
+    const output = xenv({ schema }, {});
+    assert.notProperty(output, 'TEST_FOO');
   });
 
   it('should return an object with the default values for the missing properties', function() {

@@ -30,24 +30,24 @@ module.exports = function(params, envs) {
   keys.forEach(property => {
     const config = schema[property];
 
-    if (!config.required && typeof config.default === 'undefined') {
-      throw new Error(`${property} must either have a default or be required`);
+    if (!config.required && !_.has(config, 'default')) {
+      return;
     }
 
-    if (property in envs) {
+    if (_.has(envs, property)) {
       if (config.parse && typeof envs[property] === 'string') {
         result[property] = config.parse(envs[property]);
       } else {
         result[property] = envs[property];
       }
-    } else if ('default' in config && typeof config.default !== 'function') {
+    } else if (_.has(config, 'default') && typeof config.default !== 'function') {
       result[property] = config.default;
     }
   });
 
   keys.forEach(property => {
     const config = schema[property];
-    if (!(property in envs) && typeof config.default === 'function') {
+    if (!_.has(envs, property) && typeof config.default === 'function') {
       result[property] = config.default(result);
     }
   });
@@ -56,7 +56,7 @@ module.exports = function(params, envs) {
   keys.forEach(property => {
     const config = schema[property];
 
-    if (typeof config.required === 'undefined' || property in result) {
+    if (!config.required || _.has(result, property)) {
       return;
     }
 
