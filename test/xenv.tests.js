@@ -107,7 +107,7 @@ describe('xenv', function () {
     assert.equal(output.FOO.xyz, 123);
   });
 
-  it('should parse the efault value', function() {
+  it('should parse the default value', function() {
     const schema = {
       'FOO': {
         default: JSON.stringify({ xyz: 123 }),
@@ -120,6 +120,19 @@ describe('xenv', function () {
     const output = xenv({schema}, input);
 
     assert.equal(output.FOO.xyz, 123);
+  });
+
+  it('should properly handle parse errors', function() {
+    const schema = {
+      'FOO': {
+        default: JSON.stringify({ xyz: 123 }),
+        parse: () => { throw new Error('error parsing'); }
+      }
+    };
+
+    const input = {};
+
+    assert.throws(() => xenv({ schema }, input), /Error parsing FOO/);
   });
 
   it('should not parse non-string variables', function() {

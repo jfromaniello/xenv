@@ -50,7 +50,11 @@ module.exports = function(params, envs) {
     return typeof result[property] === 'string' &&
       typeof schema[property].parse === 'function';
   }).forEach(property => {
-    result[property] = schema[property].parse(result[property]);
+    try {
+      result[property] = schema[property].parse(result[property]);
+    } catch(err) {
+      throw new Error(`Error parsing ${property}: ${err.message}`);
+    }
   });
 
   //validate required properties
