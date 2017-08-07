@@ -79,7 +79,7 @@ module.exports = function(params, envs) {
     const config = schema[property];
 
     if (typeof config.validate !== 'function' ||
-        typeof result[property] === 'undefined') {
+        !_.has(result, property)) {
       return;
     }
 
