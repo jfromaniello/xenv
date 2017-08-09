@@ -122,6 +122,22 @@ describe('xenv', function () {
     assert.equal(output.FOO.xyz, 123);
   });
 
+  it('should run transformations', function() {
+    const schema = {
+      'FOO': {
+        default:   [1, 2, 3],
+        parse:     str => str.split(','),
+        transform: arr => new Set(arr)
+      }
+    };
+
+    const input = {};
+
+    const output = xenv({schema}, input);
+
+    assert.instanceOf(output.FOO, Set);
+  });
+
   it('should properly handle parse errors', function() {
     const schema = {
       'FOO': {

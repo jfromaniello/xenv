@@ -74,6 +74,18 @@ module.exports = function(params, envs) {
     }
   });
 
+  //execute transformations
+  keys.filter(property => {
+    return typeof schema[property].transform === 'function' &&
+           _.has(result, property);
+  }).forEach(property => {
+    try {
+      result[property] = schema[property].transform(result[property]);
+    } catch(err) {
+      throw new Error(`Error transforming ${property}: ${err.message}`);
+    }
+  });
+
   //validate schemas
   keys.forEach(property => {
     const config = schema[property];
@@ -87,6 +99,7 @@ module.exports = function(params, envs) {
       throw new Error(`The environment variable ${property} has been defined with an invalid value`);
     }
   });
+
 
   return result;
 };
