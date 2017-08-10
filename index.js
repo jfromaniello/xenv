@@ -21,7 +21,7 @@ module.exports = function(params, envs) {
 
     const template = templates[type];
     if (typeof template !== 'function') {
-      throw new Error(`The predefined type for FOO "${type}" does not exists`);
+      throw new Error(`The predefined type for ${property} "${type}" does not exists`);
     }
     schema[property] = template(schema[property]);
   });
