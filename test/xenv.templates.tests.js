@@ -129,4 +129,14 @@ describe('xenvTemplates.templates', function() {
       assert.notOk(schema['validate'](false));
     });
   });
+
+  describe('xenvTemplates.seconds', function() {
+    it('should be able to parse', function() {
+      const schema = xenvTemplates.seconds({ });
+
+      assert.strictEqual(schema['parse']('10'), 10);
+      assert.strictEqual(schema['parse'](10), 10);
+      assert.strictEqual(schema['parse']('10h'), 36000);
+    });
+  });
 });
