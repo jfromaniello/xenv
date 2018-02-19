@@ -208,4 +208,64 @@ describe('xenv', function () {
     assert.throws(() => xenv({ schema }, input), /The predefined type for FOO "doris" does not exists/);
   });
 
+  it('should merge the object template with values defined in the configuration', function () {
+    const schema = {
+      'FOO' : {
+        type: "object",
+        template: {
+          a: true,
+          b: false
+        }
+      }
+    };
+
+    const input = { FOO: {c: true}};
+
+    const output = xenv({schema}, input);
+
+    assert.equal(output.FOO.a, true);
+    assert.equal(output.FOO.b, false);
+    assert.equal(output.FOO.c, true);
+
+  });
+
+  it('should replace the object template values with values defined in the configuration', function () {
+    const schema = {
+      'FOO' : {
+        type: "object",
+        template: {
+          a: true,
+          b: false
+        }
+      }
+    };
+
+    const input = { FOO: {b: true}};
+
+    const output = xenv({schema}, input);
+
+    assert.equal(output.FOO.a, true);
+    assert.equal(output.FOO.b, true);
+
+  });
+
+  it('should use the template values if no values are defined in the configuration', function () {
+    const schema = {
+      'FOO' : {
+        type: "object",
+        template: {
+          a: true,
+          b: false
+        }
+      }
+    };
+
+    const input = { };
+
+    const output = xenv({schema}, input);
+
+    assert.equal(output.FOO.a, true);
+    assert.equal(output.FOO.b, false);
+
+  });
 });
