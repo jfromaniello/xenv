@@ -86,6 +86,13 @@ module.exports = function(params, envs) {
     }
   });
 
+  //apply configuration element templates
+  keys.filter(property =>
+    schema[property].type === 'object' && schema[property].template
+  ).forEach(property =>
+    result[property] = _.defaults({}, result[property], schema[property].template)
+  );
+
   //validate schemas
   keys.forEach(property => {
     const config = schema[property];
