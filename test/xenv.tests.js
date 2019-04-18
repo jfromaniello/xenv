@@ -55,6 +55,19 @@ describe('xenv', function () {
     assert.equal(output.FOO, 'https://foo.com');
   });
 
+  it('should work when default is a func but returns undefined', function() {
+    const schema = {
+      'FOO': {
+        type: 'object',
+        default: env => env.BAR
+      },
+      'BAR': { }
+    };
+    const output = xenv({schema}, {});
+    assert.notProperty(output, 'FOO');
+    assert.notProperty(output, 'BAR');
+  });
+
   it('should throw an error for required properties', function() {
     const schema = {
       'FOO': {

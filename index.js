@@ -42,7 +42,9 @@ module.exports = function(params, envs) {
            typeof schema[property].default === 'function';
   }).forEach(property => {
     const config = schema[property];
-    result[property] = config.default(result);
+    const value = config.default(result);
+    if (typeof value === 'undefined') return;
+    result[property] = value;
   });
 
   //execute parsers
