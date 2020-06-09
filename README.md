@@ -21,9 +21,9 @@ const schema = {
     parse: parseInt,
     validate: port => port > 1000
   },
-  BLACKLIST: {
+  BLOCKED: {
     default: [],
-    parse: blacklist => blacklist.split(',')
+    parse: blocked => blocked.split(',')
   }
 };
 
@@ -38,7 +38,7 @@ Then running:
 MONGODB=mongodb://localhost/test \
   RABBITMQ=amqp://user:pass@localhost/test \
   PORT=9000 \
-  BLACKLIST=foo,bar \
+  BLOCKED=foo,bar \
   node test.js
 ```
 
@@ -55,7 +55,7 @@ Will print:
     path: '/test'
   },
   PORT: 9000,
-  BLACKLIST: ['foo', 'bar']
+  BLOCKED: ['foo', 'bar']
 }
 ```
 
@@ -78,9 +78,9 @@ PORT: {
   parse: parseInt,
   default: 9000
 },
-BLACKLIST: {
+BLOCKED: {
   default: [],
-  parse: blacklist => blacklist.split(','),
+  parse: blocked => blocked.split(','),
   validate: v => Array.isArray(v)
 },
 LOG_LEVEL: {
@@ -96,7 +96,7 @@ PORT: {
   type: 'int'
   default: 9000
 },
-BLACKLIST: {
+BLOCKED: {
   type: 'arrayOfStrings'
 },
 LOG_LEVEL: {
@@ -122,7 +122,7 @@ const config = xenv(schema, rawConfig);
 
 In this case is possible that the configuration sourced from the JSON file is already parsed while settings coming from environment variables have some type of encoding.
 
-Imagine you have a `BLACKLIST` variable like the one shown before (`type: 'arrayOfStrings'`). If xenv receives an string it will do `value.split(',')` but if the variable is an array then it will not try to parse it.
+Imagine you have a `BLOCKED` variable like the one shown before (`type: 'arrayOfStrings'`). If xenv receives an string it will do `value.split(',')` but if the variable is an array then it will not try to parse it.
 
 ## License
 
