@@ -2,10 +2,10 @@ const assert = require('chai').assert;
 const url = require('url');
 const xenvTemplates = require('../lib/templates');
 
-describe('xenvTemplates.templates', function() {
-  describe('xenvTemplates.int', function() {
+describe('xenvTemplates.templates', function () {
+  describe('xenvTemplates.int', function () {
 
-    it('should return an int schema', function() {
+    it('should return an int schema', function () {
       const schema = xenvTemplates.int({ default: 3000 });
       assert.strictEqual(schema['default'], 3000);
       assert.strictEqual(schema['parse'], parseInt);
@@ -16,8 +16,8 @@ describe('xenvTemplates.templates', function() {
 
   });
 
-  describe('xenvTemplates.float', function() {
-    it('should return a float schema', function() {
+  describe('xenvTemplates.float', function () {
+    it('should return a float schema', function () {
       const schema = xenvTemplates.float({ default: 5.5 });
       assert.strictEqual(schema['default'], 5.5);
       assert.strictEqual(schema['parse'], parseFloat);
@@ -27,8 +27,8 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-  describe('xenvTemplates.object', function() {
-    it('should return an object schema', function() {
+  describe('xenvTemplates.object', function () {
+    it('should return an object schema', function () {
       const def = {};
       const schema = xenvTemplates.object({ default: def });
       assert.strictEqual(schema['default'], def);
@@ -39,8 +39,8 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-  describe('xenvTemplates.url', function() {
-    it('should return an url schema', function() {
+  describe('xenvTemplates.url', function () {
+    it('should return an url schema', function () {
       const def = {};
       const schema = xenvTemplates.url({ default: def });
       assert.strictEqual(schema['default'], def);
@@ -52,8 +52,8 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-  describe('xenvTemplates.string', function() {
-    it('should return an string schema', function() {
+  describe('xenvTemplates.string', function () {
+    it('should return an string schema', function () {
       const schema = xenvTemplates.string({ default: 'jj' });
       assert.strictEqual(schema['default'], 'jj');
       assert.strictEqual(schema['parse'], undefined);
@@ -63,8 +63,8 @@ describe('xenvTemplates.templates', function() {
       assert.notOk(schema['validate'](false));
     });
 
-    it('should allow valid values', function() {
-      const schema = xenvTemplates.string({ default: 'jj', oneOf: [ 'x', 'y' ] });
+    it('should allow valid values', function () {
+      const schema = xenvTemplates.string({ default: 'jj', oneOf: ['x', 'y'] });
       assert.ok(schema['validate']('x'));
       assert.ok(schema['validate']('y'));
       assert.notOk(schema['validate']('z'));
@@ -74,8 +74,8 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-  describe('xenvTemplates.boolean', function() {
-    it('should return a boolean schema', function() {
+  describe('xenvTemplates.boolean', function () {
+    it('should return a boolean schema', function () {
       const schema = xenvTemplates.boolean({ default: true });
       assert.strictEqual(schema['default'], true);
 
@@ -97,9 +97,39 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-  describe('xenvTemplates.arrayOfStrings', function() {
-    it('should return a arrayOfStrings schema', function() {
-      const schema = xenvTemplates.arrayOfStrings({default: []});
+  describe('xenvTemplates.strictBoolean', function () {
+    [
+      '', '0', 'false', 'FALSE'
+    ].forEach(falseString => {
+      it(`should return false for "${falseString}"`, function () {
+        const schema = xenvTemplates.strictBoolean({});
+        assert.strictEqual(schema['parse'](falseString), false);
+      });
+    });
+
+    [
+      '1', 'true', 'TRue'
+    ].forEach(trueString => {
+      it(`should return true for "${trueString}"`, function () {
+        const schema = xenvTemplates.strictBoolean({});
+        assert.strictEqual(schema['parse'](trueString), true);
+      });
+    });
+
+    ['si', '4', 'fooooo'].forEach(str => {
+      it(`should fail with "${str}"`, function () {
+        const schema = xenvTemplates.strictBoolean({});
+        assert.throws(() => {
+          schema['parse'](str)
+        }, `unknown boolen value "${str}"`)
+      });
+    });
+
+  });
+
+  describe('xenvTemplates.arrayOfStrings', function () {
+    it('should return a arrayOfStrings schema', function () {
+      const schema = xenvTemplates.arrayOfStrings({ default: [] });
       assert.ok(Array.isArray(schema['default']));
       assert.equal(schema['default'].length, 0);
 
@@ -113,10 +143,8 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-
-
-  describe('xenvTemplates.millis', function() {
-    it('should return an millis schema', function() {
+  describe('xenvTemplates.millis', function () {
+    it('should return an millis schema', function () {
       const schema = xenvTemplates.millis({ default: 100 });
       assert.strictEqual(schema['default'], 100);
 
@@ -130,9 +158,9 @@ describe('xenvTemplates.templates', function() {
     });
   });
 
-  describe('xenvTemplates.seconds', function() {
-    it('should be able to parse', function() {
-      const schema = xenvTemplates.seconds({ });
+  describe('xenvTemplates.seconds', function () {
+    it('should be able to parse', function () {
+      const schema = xenvTemplates.seconds({});
 
       assert.strictEqual(schema['parse']('10'), 10);
       assert.strictEqual(schema['parse'](10), 10);
