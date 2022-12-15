@@ -83,11 +83,13 @@ describe('xenvTemplates.templates', function() {
       assert.notOk(schema['parse']());
       assert.notOk(schema['parse'](null));
       assert.notOk(schema['parse'](false));
+      assert.notOk(schema['parse']('false'));
 
       assert.ok(schema['parse']('1'));
       assert.ok(schema['parse']('tokads'));
       assert.ok(schema['parse'](' '));
       assert.ok(schema['parse'](true));
+      assert.ok(schema['parse']('true'));
 
       assert.notOk(schema['validate']('tete'));
       assert.notOk(schema['validate'](10.12));
